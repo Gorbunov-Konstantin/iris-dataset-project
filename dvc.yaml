@@ -1,0 +1,34 @@
+stages:
+  prepare:
+    cmd: python src/prepare_data.py --input data/iris.csv --train data/train.csv --test data/test.csv
+    deps:
+      - src/prepare_data.py
+      - data/iris.csv
+    outs:
+      - data/train.csv
+      - data/test.csv
+
+  train:
+    cmd: python src/train.py --train data/train.csv --test data/test.csv --model models/model.joblib --metrics metrics.csv
+    deps:
+      - src/train.py
+      - data/train.csv
+      - data/test.csv
+    outs:
+      - models/model.joblib
+    metrics:
+      - metrics.csv
+
+
+plots:
+  - max_depth vs accuracy:
+      template: simple
+      x: "max_depth"
+      y:
+        metrics.csv: accuracy
+  - max_depth vs f1_score:
+      template: simple
+      x: "max_depth"
+      y:
+        metrics.csv: f1_score
+

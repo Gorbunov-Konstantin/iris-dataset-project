@@ -1,0 +1,61 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare_data.py --input data/iris.csv --train data/train.csv --test
+      data/test.csv
+    deps:
+    - path: data/iris.csv
+      hash: md5
+      md5: 013d0da08d6506664ce640459139176b
+      size: 3858
+    - path: src/prepare_data.py
+      hash: md5
+      md5: 1e6c6f3a9a92fcf47c7ae862544076e4
+      size: 808
+    outs:
+    - path: data/test.csv
+      hash: md5
+      md5: d21558c0b167dadf6ab82e7f8f4062c0
+      size: 848
+    - path: data/train.csv
+      hash: md5
+      md5: 9f2b0c394979592cbef652745ba5a09c
+      size: 3220
+  train:
+    cmd: python src/train.py --train data/train.csv --test data/test.csv --model models/model.joblib
+      --metrics metrics.csv
+    deps:
+    - path: data/test.csv
+      hash: md5
+      md5: d21558c0b167dadf6ab82e7f8f4062c0
+      size: 848
+    - path: data/train.csv
+      hash: md5
+      md5: 9f2b0c394979592cbef652745ba5a09c
+      size: 3220
+    - path: src/train.py
+      hash: md5
+      md5: 713deedaca19c5f085a03dea31a31b44
+      size: 2328
+    outs:
+    - path: metrics.csv
+      hash: md5
+      md5: 722f7489346df61c2eaf6804ac876200
+      size: 278
+    - path: models/model.joblib
+      hash: md5
+      md5: 3236fd253c406559c553e74314fba853
+      size: 3553
+  plots:
+    cmd: dvc plots show metrics.csv -o plots/metrics.html
+    deps:
+    - path: metrics.csv
+      hash: md5
+      md5: e47833c68b03879fd7fa228e0c39976c
+      size: 66
+    outs:
+    - path: plots/metrics.html
+      hash: md5
+      md5: da82f3a0bc4031b8439c726672398843.dir
+      size: 2722
+      nfiles: 1
